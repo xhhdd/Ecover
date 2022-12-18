@@ -25,6 +25,36 @@ def main():
         put_processbar('process',init=0)
         return
     intro()
+    # 选择字体————————————————————————————
+    def font():
+        with use_scope('normal_top_s',clear=True):
+            put_markdown(r""" # 选择字体
+            - 可以自定义上传字体文件
+            """)
+        file_upload('上传字体',
+        accept=['.ttf','.ttc','.otf'],
+        placeholder='支持ttf、ttc、otf格式',
+        max_size='100m',
+        required=True
+        )
+        font=select('font',
+            options=['思源黑体_Regular',
+            '霞鹜文楷GB_Light',
+            '霞鹜文楷GB_Regular',
+            '霞鹜文楷GB_Bold',
+            '霞鹜文楷GB-mono_Light',
+            '霞鹜文楷GB-mono_Regular',
+            '霞鹜文楷GB-mono_Bold',
+            '阿里巴巴普惠体_Light',
+            '阿里巴巴普惠体_Regular',
+            '阿里巴巴普惠体_Medium',
+            '阿里巴巴普惠体_Bold',
+            '阿里巴巴普惠体_Heavy',
+            ]
+        )
+        return font
+    font_name=font()
+    put_text(font_name)
     # 选择颜色模式————————————————————————————
     def color_mode():
         with use_scope('normal_top_s',clear=True):
@@ -245,3 +275,6 @@ def main():
 
 if __name__ == '__main__':
     platform.path_deploy_http('/Users/xhhdd/Desktop/simple_platform_cover',port=5012,debug=True)
+
+
+
