@@ -1,11 +1,9 @@
 from PIL import Image,ImageDraw,ImageFont
-siyuan_heiti='/Users/xhhdd/Library/Fonts/SourceHanSansCN-Regular.otf'
-wenkai="/Users/xhhdd/Library/Fonts/LXGWWenKaiMonoGBFusion-Bold.ttf"
-dongqing_heiti='/System/Library/Fonts/Hiragino Sans GB.ttc'
+
 class create_cover:
-    def __init__(self,bg_color,text_color,big_content,small_content):
+    def __init__(self,font_file,bg_color,text_color,big_content,small_content):
         # 字体路径
-        self.font_file='https://cdn.xhhdd.cc/uPic2/oLAX7z.otf'
+        self.font_file=font_file
         # 正文文字颜色｜用rgb数值控制
         self.text_color=text_color
         # 背景颜色

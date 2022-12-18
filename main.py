@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from enum import auto
 from pywebio.input import *
 from pywebio.output import *
 from pywebio import platform
@@ -245,4 +244,4 @@ def main():
         )
 
 if __name__ == '__main__':
-    platform.path_deploy_http('/Users/xhhdd/Desktop/new_aurality',port=5012,debug=True)
+    platform.path_deploy_http('/Users/xhhdd/Desktop/simple_platform_cover',port=5012,debug=True)
