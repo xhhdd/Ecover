@@ -25,36 +25,52 @@ def main():
         put_processbar('process',init=0)
         return
     intro()
+
     # 选择字体————————————————————————————
     def font():
-        with use_scope('normal_top_s',clear=True):
-            put_markdown(r""" # 选择字体
-            - 可以自定义上传字体文件
-            """)
-        file_upload('上传字体',
-        accept=['.ttf','.ttc','.otf'],
-        placeholder='支持ttf、ttc、otf格式',
-        max_size='100m',
-        required=True
-        )
-        font=select('font',
-            options=['思源黑体_Regular',
-            '霞鹜文楷GB_Light',
-            '霞鹜文楷GB_Regular',
-            '霞鹜文楷GB_Bold',
-            '霞鹜文楷GB-mono_Light',
-            '霞鹜文楷GB-mono_Regular',
-            '霞鹜文楷GB-mono_Bold',
-            '阿里巴巴普惠体_Light',
-            '阿里巴巴普惠体_Regular',
-            '阿里巴巴普惠体_Medium',
-            '阿里巴巴普惠体_Bold',
-            '阿里巴巴普惠体_Heavy',
-            ]
-        )
-        return font
-    font_name=font()
-    put_text(font_name)
+        font_mode=actions(label='选择字体',buttons=['选择默认字体','上传字体文件'])
+        set_processbar('process',2/10)
+        if font_mode=='上传字体文件':
+            with use_scope('normal_top_s',clear=True): 
+                save_file=file_upload('上传字体',
+                accept=['.ttf','.ttc','.otf'],
+                placeholder='支持ttf、ttc、otf格式',
+                max_size='100m',
+                required=True
+                )
+                split_l=save_file['filename'].split('.',-1)
+                file_path='temp_file/'+str(int(time.time()))+'.'+split_l[-1]
+                open(file_path, 'wb').write(save_file['content'])
+                font_result=file_path
+        if font_mode=='选择默认字体':
+            with use_scope('normal_top_s',clear=True): 
+                choice_font=select(
+                    '选择封面图上的字体',
+                    options=['思源黑体_Regular',
+                    '霞鹜文楷GB_Light',
+                    '霞鹜文楷GB_Regular',
+                    '霞鹜文楷GB_Bold',
+                    '霞鹜文楷GB-mono_Light',
+                    '霞鹜文楷GB-mono_Regular',
+                    '霞鹜文楷GB-mono_Bold',
+                    '阿里巴巴普惠体_Light',
+                    '阿里巴巴普惠体_Regular',
+                    '阿里巴巴普惠体_Medium',
+                    '阿里巴巴普惠体_Bold',
+                    '阿里巴巴普惠体_Heavy',
+                    '江城圆体 300W',
+                    '江城圆体 400W',
+                    '江城圆体 500W',
+                    '江城圆体 600W',
+                    '江城圆体 700W'
+                    ]
+                )
+                font_result=choice_font
+
+        return font_result
+    font_result=font()
+    font_result_s=font_result[:] # 数值存储
+
     # 选择颜色模式————————————————————————————
     def color_mode():
         with use_scope('normal_top_s',clear=True):
@@ -131,7 +147,7 @@ def main():
     big_content_s,small_content_s=big_content[:],small_content[:] # 内容存储
 
     # 生成一个demo————————————————————————————
-    def creat_cover_demo(choice_platform,bg_color_s,text_color_s,big_content_s,small_content_s):
+    def creat_cover_demo(choice_platform,font_result_s,bg_color_s,text_color_s,big_content_s,small_content_s):
         # 进度条
         set_processbar('process',9/10)
         def save_pic(pic_l:Image,user_name):
@@ -147,7 +163,7 @@ def main():
 
         # 微信————————————————————————————
         if choice_platform=='微信公众号':
-            pic=create_cover(bg_color_s,text_color_s,big_content_s,small_content_s).wechat()
+            pic=create_cover(font_result_s,bg_color_s,text_color_s,big_content_s,small_content_s).wechat()
             with use_scope('normal_top_s',clear=True):
                 put_markdown(r""" # 图片介绍
                 微信公众号发布文章的时候，可以指定一张图。
@@ -171,7 +187,7 @@ def main():
             
         # handsome————————————————————————————
         if choice_platform=='handsome主题的blog':
-            big,small=create_cover(bg_color_s,text_color_s,big_content_s,small_content_s).blog()
+            big,small=create_cover(font_result_s,bg_color_s,text_color_s,big_content_s,small_content_s).blog()
             with use_scope('normal_top_s',clear=True):
                 put_markdown(r""" # 图片介绍 
                 该函数主要是为了适应handsome这个博客主题。
@@ -203,7 +219,7 @@ def main():
 
         if choice_platform=='知乎':
             def pre_save():
-                pic=create_cover(bg_color_s,text_color_s,big_content_s,small_content_s).zhihu(zhihu_pre=0)
+                pic=create_cover(font_result_s,bg_color_s,text_color_s,big_content_s,small_content_s).zhihu(zhihu_pre=0)
                 save_pic([pic],'zhihu.png')
                 return 
             with use_scope('normal_top_s',clear=True):
@@ -216,7 +232,7 @@ def main():
                 所以在生成图片之前，先预览字有没有超过线。
                 确认完毕之后再按下按钮进行生成。
                 """)
-            pre_pic=create_cover(bg_color_s,text_color_s,big_content_s,small_content_s).zhihu(zhihu_pre=1)
+            pre_pic=create_cover(font_result_s,bg_color_s,text_color_s,big_content_s,small_content_s).zhihu(zhihu_pre=1)
             with use_scope('pic_demo',clear=True):
                 put_markdown(r'''# 图片预览
                 ''')
@@ -226,7 +242,7 @@ def main():
                         None,
                         put_button("确认未过线，点击下载", onclick=lambda:pre_save(),color='danger')
                         ],
-                        size='80% 10px 20%'
+                        size='6fr 0.5fr 1fr'
                     )
 
         if choice_platform=='hexo':
@@ -236,7 +252,7 @@ def main():
                 使用的是里面hexo这个主题，
                 但是我对hexo并不了解，自己截图测量的比例...
                 """)
-            pic=create_cover(bg_color_s,text_color_s,big_content_s,small_content_s).hexo()
+            pic=create_cover(font_result_s,bg_color_s,text_color_s,big_content_s,small_content_s).hexo()
             with use_scope('pic_demo',clear=True):
                 put_markdown(r'''# 图片预览
                 ''')
@@ -245,13 +261,12 @@ def main():
                         put_image(pic,format='png',width='50%'),
                         None,
                         put_button("点击下载", onclick=lambda:save_pic([pic],'hexo.png'),color='danger')
-                        ],
-                        size='80% 10px 20%'
+                        ],size='6fr 0.5fr 1fr'
                     )
 
-    creat_cover_demo(choice_platform_s,bg_color_s,text_color_s,big_content_s,small_content_s)
+    creat_cover_demo(choice_platform_s,font_result_s,bg_color_s,text_color_s,big_content_s,small_content_s)
     
-    set_list=[bg_color_s,text_color_s,big_content_s,small_content_s]
+    set_list=[bg_color_s,text_color_s,big_content_s,small_content_s,font_result_s]
     def re_create(mode):
         if mode=='color':
             # 根据原有的颜色模式，重新获取颜色参数
@@ -263,7 +278,7 @@ def main():
             big_content,small_content=content(choice_platform_s)
             set_list[2],set_list[3]=big_content,small_content
 
-        creat_cover_demo(choice_platform_s,set_list[0],set_list[1],set_list[2],set_list[3])
+        creat_cover_demo(choice_platform_s,set_list[4],set_list[0],set_list[1],set_list[2],set_list[3])
         return set_list
     with use_scope('re_creat'):
         put_markdown(r'''## 生成结果不满意？

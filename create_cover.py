@@ -1,9 +1,38 @@
 from PIL import Image,ImageDraw,ImageFont
 
+# 处理字体
+def adjust_font(font_result):
+    font_dict={
+    '思源黑体_Regular':'SourceHanSansCN-Regular.otf',
+    '霞鹜文楷GB_Light':'LXGWWenKaiGBFusion-Light.ttf',
+    '霞鹜文楷GB_Regular':'LXGWWenKaiGBFusion-Regular.ttf',
+    '霞鹜文楷GB_Bold':'LXGWWenKaiGBFusion-Bold.ttf',
+    '霞鹜文楷GB-mono_Light':'LXGWWenKaiMonoGBFusion-Light.ttf',
+    '霞鹜文楷GB-mono_Regular':'LXGWWenKaiMonoGBFusion-Regular.ttf',
+    '霞鹜文楷GB-mono_Bold':'LXGWWenKaiMonoGBFusion-Bold.ttf',
+    '阿里巴巴普惠体_Light':'Alibaba-PuHuiTi-Light.ttf',
+    '阿里巴巴普惠体_Regular':'Alibaba-PuHuiTi-Regular.ttf',
+    '阿里巴巴普惠体_Medium':'Alibaba-PuHuiTi-Medium.ttf',
+    '阿里巴巴普惠体_Bold':'Alibaba-PuHuiTi-Bold.ttf',
+    '阿里巴巴普惠体_Heavy':'Alibaba-PuHuiTi-Heavy.ttf',
+    '江城圆体 300W':'江城圆体 300W.ttf',
+    '江城圆体 400W':'江城圆体 400W.ttf',
+    '江城圆体 500W':'江城圆体 500W.ttf',
+    '江城圆体 600W':'江城圆体 600W.ttf',
+    '江城圆体 700W':'江城圆体 700W.ttf',
+
+    }
+    # 检测输入的是路径还是字体文件
+    if font_dict.get(font_result)==None:
+        font_file=font_result
+    else:
+        font_file='font_file/'+font_dict.get(font_result)
+    return font_file
+
 class create_cover:
-    def __init__(self,font_file,bg_color,text_color,big_content,small_content):
+    def __init__(self,font_result,bg_color,text_color,big_content,small_content):
         # 字体路径
-        self.font_file=font_file
+        self.font_file=adjust_font(font_result)
         # 正文文字颜色｜用rgb数值控制
         self.text_color=text_color
         # 背景颜色
