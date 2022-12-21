@@ -13,14 +13,20 @@ from create_color import *
 from create_cover import *
 
 config(title='封面图生成',
-description='简单生成各平台封面图的应用',
+description='简单生成各平台的封面图',
 theme='minty'
 )
+
 def main():
+    image_url="https://cdn.xhhdd.cc/uPic2/2ZUaT3.png"
+    run_js("""
+    $('#favicon32,#favicon16').remove(); 
+    $('head').append('<link rel="icon" type="image/png" href="%s">')
+    """ % image_url)
     # 最上方一直保持显示的进度提示
     def intro():
         with use_scope('intro'):
-            put_markdown(r""" # 输入颜色、文字获取封面图
+            put_markdown(r""" # 输入字体、颜色等信息生成封面图
             """)
         put_processbar('process',init=0)
         return
@@ -41,7 +47,11 @@ def main():
                 split_l=save_file['filename'].split('.',-1)
                 file_path='temp_file/'+str(int(time.time()))+'.'+split_l[-1]
                 open(file_path, 'wb').write(save_file['content'])
-                font_result=file_path
+                font_result=file_path[:]
+                # 清理文件
+                @defer_call
+                def cleanup():
+                    os.remove(font_result)
         if font_mode=='选择默认字体':
             with use_scope('normal_top_s',clear=True): 
                 choice_font=select(
@@ -183,7 +193,7 @@ def main():
                         put_button("点击下载", onclick=lambda:save_pic([pic],'wechat.png'),color='danger')
                         ],
                         size='80% 10px 20%'
-                    )
+                    ) 
             
         # handsome————————————————————————————
         if choice_platform=='handsome主题的blog':
@@ -288,8 +298,10 @@ def main():
         put_button('重新填写文字',onclick=lambda : re_create('content'),color='secondary')]
         )
 
+
+
 if __name__ == '__main__':
-    platform.path_deploy_http('/Users/xhhdd/Desktop/simple_platform_cover',port=5012,debug=True)
-
-
-
+    #platform.path_deploy_http('/Users/xhhdd/Desktop/simple_platform_cover',port=5012,debug=True)
+    platform.start_server(main,port=80,debug=True)
+    #platform.tornado_http.start_server(main,port=5012,debug=True)
+    #platform.path_deploy('/Users/xhhdd/Desktop/simple_platform_cover',port=5012,debug=True)
